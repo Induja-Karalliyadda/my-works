@@ -1,0 +1,13 @@
+.wrapper .title.signup {
+    background: linear-gradient(-135deg, #6a11cb, #2575fc); /* Adjusted gradient */
+  }
+  
+  form .field input:focus,
+  form .field input:valid {
+    border-color: #2575fc; /* Adjusted border color */
+  }
+  
+  form .signup-link {
+    color: #333;
+  }
+  
