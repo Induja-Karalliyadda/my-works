@@ -1,3 +1,4 @@
+/* Login.css */
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 
 * {
@@ -7,17 +8,12 @@
   font-family: 'Poppins', sans-serif;
 }
 
-html, body {
+body {
   display: grid;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   place-items: center;
   background: #f2f2f2;
-}
-
-::selection {
-  background: #4158d0;
-  color: #fff;
 }
 
 .wrapper {
@@ -39,7 +35,7 @@ html, body {
 }
 
 .wrapper form {
-  padding: 10px 30px 50px 30px;
+  padding: 30px;
 }
 
 .wrapper form .field {
@@ -61,7 +57,7 @@ html, body {
 }
 
 .wrapper form .field input:focus,
-form .field input:valid {
+.wrapper form .field input:valid {
   border-color: #4158d0;
 }
 
@@ -69,7 +65,7 @@ form .field input:valid {
   position: absolute;
   top: 50%;
   left: 20px;
-  color: #999999;
+  color: #999;
   font-weight: 400;
   font-size: 17px;
   pointer-events: none;
@@ -77,46 +73,18 @@ form .field input:valid {
   transition: all 0.3s ease;
 }
 
-form .field input:focus ~ label,
-form .field input:valid ~ label {
+.wrapper form .field input:focus ~ label,
+.wrapper form .field input:valid ~ label {
   top: 0%;
-  font-size: 16px;
+  font-size: 14px;
   color: #4158d0;
   background: #fff;
   transform: translateY(-50%);
 }
 
-form .content {
-  display: flex;
-  width: 100%;
-  height: 50px;
-  font-size: 16px;
-  align-items: center;
-  justify-content: space-around;
-}
-
-form .content .checkbox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-form .content input {
-  width: 15px;
-  height: 15px;
-}
-
-form .content label {
-  color: #262626;
-  user-select: none;
-  padding-left: 5px;
-}
-
-form .field input[type="submit"] {
+.wrapper form .field input[type="submit"] {
   color: #fff;
   border: none;
-  padding-left: 0;
-  margin-top: -10px;
   font-size: 20px;
   font-weight: 500;
   cursor: pointer;
@@ -124,23 +92,40 @@ form .field input[type="submit"] {
   transition: all 0.3s ease;
 }
 
-form .field input[type="submit"]:active {
+.wrapper form .field input[type="submit"]:hover {
+  background: linear-gradient(-135deg, #4158d0, #c850c0);
+}
+
+.wrapper form .field input[type="submit"]:active {
   transform: scale(0.95);
 }
 
-form .signup-link {
-  color: #262626;
-  margin-top: 20px;
+.wrapper .signup-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.wrapper .signup-link a {
+  color: #4caf50;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.wrapper .signup-link a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-bottom: 10px;
   text-align: center;
 }
 
-form .pass-link a,
-form .signup-link a {
-  color: #4158d0;
-  text-decoration: none;
-}
-
-form .pass-link a:hover,
-form .signup-link a:hover {
-  text-decoration: underline;
+.success-message {
+  color: #4caf50;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: center;
 }
