@@ -2,7 +2,8 @@
 
 function AdminDashboard() {
   return (
-    <div>adminDashboard</div>
+    <div>
+      adminDashboard</div>
   )
 }
 

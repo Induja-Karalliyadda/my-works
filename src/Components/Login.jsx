@@ -44,16 +44,19 @@ function Login() {
 
       if (response.ok) {
         setSuccess("Login successful!");
-
-        // Redirect based on role
-        if (result.role === "admin") {
+      
+        console.log("User Role:", result.userRole); // Debugging
+      
+        if (result.userRole === "admin") {
           navigate("/admin-dashboard");
-        } else if (result.role === "super_admin") {
+        } else if (result.userRole === "super_admin") {
           navigate("/super-admin-dashboard");
         } else {
-          navigate("/user-dashboard");
+          navigate("/user-dashboard/user-data");
         }
-      } else {
+      }
+      
+       else {
         setError(result.message || "Login failed. Please try again.");
       }
     } catch (error) {
