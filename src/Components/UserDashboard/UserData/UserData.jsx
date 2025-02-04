@@ -17,6 +17,7 @@ function UserData() {
   // Get logged-in user ID from localStorage
   useEffect(() => {
     const userId = localStorage.getItem("userId");
+    console.log("User ID from localStorage:", userId); // Debug log
     if (!userId) {
       console.warn("No userId found in localStorage");
       setLoading(false);
@@ -45,7 +46,8 @@ function UserData() {
       });
 
     } catch (error) {
-      console.error("Error fetching user:", error.response?.data || error);
+      console.error("Error fetching user:", error.response?.data || error.message || error);
+      alert("Failed to fetch user details. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -91,7 +93,7 @@ function UserData() {
   // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("userId");
-    navigate("/login");
+    navigate("http://localhost:5173/");
   };
 
   return (
@@ -101,7 +103,7 @@ function UserData() {
       {loading ? (
         <p>Loading user data...</p>
       ) : !user ? (
-        <p>No user logged in. Please <a href="/login">log in</a> first.</p>
+        <p>No user logged in. Please <a href="http://localhost:5173/">log in</a> first.</p>
       ) : (
         <div className="profile-details">
           {editing ? (
