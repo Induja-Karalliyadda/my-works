@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./UserData.css"; // Optional: Add styling
+import "./UserData.css"; // Optional styling
 
 function UserData() {
   const navigate = useNavigate();
@@ -14,10 +14,9 @@ function UserData() {
     password: "",
   });
 
-  // Get logged-in user ID from localStorage
+  // Fetch logged-in user ID from localStorage
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-    console.log("User ID from localStorage:", userId); // Debug log
     if (!userId) {
       console.warn("No userId found in localStorage");
       setLoading(false);
@@ -26,15 +25,14 @@ function UserData() {
     fetchUserDetails(userId);
   }, []);
 
-  // Fetch user details from the backend
+  // Fetch user details from backend
   const fetchUserDetails = async (userId) => {
     try {
       console.log(`Fetching user details for ID: ${userId}`);
       const res = await axios.get(`http://localhost:5000/api/users/${userId}`);
-      console.log("User data received:", res.data);
 
       if (!res.data) {
-        console.warn("No user data found in API response");
+        console.warn("No user data received from API.");
         return;
       }
 
@@ -42,18 +40,17 @@ function UserData() {
       setFormData({
         fullName: res.data.fullName || "",
         email: res.data.email || "",
-        password: "", // Leave password empty for security
+        password: "", // Keep empty for security
       });
-
     } catch (error) {
       console.error("Error fetching user:", error.response?.data || error.message || error);
-      alert("Failed to fetch user details. Please try again later.");
+      alert("Failed to fetch user details. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle input changes in the form
+  // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -63,12 +60,12 @@ function UserData() {
     setFormData({
       fullName: user.fullName,
       email: user.email,
-      password: "", // Keep password empty for security
+      password: "", // Keep empty for security
     });
     setEditing(true);
   };
 
-  // Handle "Save" button click (Update user)
+  // Handle "Save" button click (Update user details)
   const handleSave = async () => {
     if (!formData.fullName || !formData.email) {
       alert("Full Name and Email are required!");
@@ -77,7 +74,17 @@ function UserData() {
 
     try {
       console.log("Updating user with:", formData);
-      const res = await axios.put(`http://localhost:5000/api/users/${user.id}`, formData);
+      
+      // Only send password if it is updated
+      const updateData = {
+        fullName: formData.fullName,
+        email: formData.email,
+      };
+      if (formData.password) {
+        updateData.password = formData.password;
+      }
+
+      const res = await axios.put(`http://localhost:5000/api/users/${user.id}`, updateData);
       console.log("Profile updated successfully:", res.data);
 
       setUser({ ...user, fullName: formData.fullName, email: formData.email });
@@ -85,15 +92,15 @@ function UserData() {
       alert("Profile updated successfully!");
 
     } catch (error) {
-      console.error("Error updating profile:", error.response?.data || error);
-      alert("Failed to update profile. Check the console for details.");
+      console.error("Error updating profile:", error.response?.data || error.message || error);
+      alert("Failed to update profile. Please check console for details.");
     }
   };
 
   // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("userId");
-    navigate("http://localhost:5173/");
+    navigate("/");
   };
 
   return (
@@ -103,35 +110,19 @@ function UserData() {
       {loading ? (
         <p>Loading user data...</p>
       ) : !user ? (
-        <p>No user logged in. Please <a href="http://localhost:5173/">log in</a> first.</p>
+        <p>No user logged in. Please <a href="/">log in</a> first.</p>
       ) : (
         <div className="profile-details">
           {editing ? (
             <>
               <label>Full Name:</label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-              />
+              <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} />
 
               <label>Email:</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} />
 
               <label>New Password:</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                placeholder="Enter new password"
-                onChange={handleChange}
-              />
+              <input type="password" name="password" value={formData.password} placeholder="Enter new password" onChange={handleChange} />
 
               <button onClick={handleSave} className="save-btn">Save</button>
               <button onClick={() => setEditing(false)} className="cancel-btn">Cancel</button>
