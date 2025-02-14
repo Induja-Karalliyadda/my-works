@@ -44,9 +44,13 @@ function Login() {
 
       if (response.ok) {
         setSuccess("Login successful!");
-      
+
+        // Store userId in localStorage
+       
+          localStorage.setItem("userId",JSON.stringify(result.id) );
+          console.log(result.id)     
         console.log("User Role:", result.userRole); // Debugging
-      
+
         if (result.userRole === "admin") {
           navigate("/admin-dashboard");
         } else if (result.userRole === "super_admin") {
@@ -54,9 +58,7 @@ function Login() {
         } else {
           navigate("/user-dashboard/user-data");
         }
-      }
-      
-       else {
+      } else {
         setError(result.message || "Login failed. Please try again.");
       }
     } catch (error) {
