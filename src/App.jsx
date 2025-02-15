@@ -9,6 +9,9 @@ import UserHome from './Components/UserDashboard/UserHome/UserHome'
 import Admin from './Components/AdminDashbord/Admin/Admin';
 import AdminData from './Components/AdminDashbord/AdminData/AdminData';
 import AddCourse from './Components/AdminDashbord/AddCourse/AddCourse';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+
 function App() {
   return (
     <Router>

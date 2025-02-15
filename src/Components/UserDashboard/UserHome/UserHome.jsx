@@ -16,7 +16,7 @@ function UserHome() {
         <div className="login-icon">
           <button onClick={handleLogout}>Logout</button>
         </div>
-
+        
     </div>
   )
 }
