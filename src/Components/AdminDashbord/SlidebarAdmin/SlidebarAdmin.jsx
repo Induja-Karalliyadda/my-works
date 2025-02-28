@@ -15,6 +15,9 @@ function Sidebar() {
           <li>
             <Link to="/admin-dashboard/add-couse">Add Couse</Link>
           </li>
+          <li>
+            <Link to="/admin-dashboard/users-courses">Users using courses</Link>
+          </li>
         </ul>
       </div>
     </div>
