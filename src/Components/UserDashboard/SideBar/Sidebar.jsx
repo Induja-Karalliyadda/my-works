@@ -13,7 +13,7 @@ function Sidebar() {
             <Link to="/user-dashboard/user-data">User Data</Link>
           </li>
           <li>
-            <Link to="/user-dashboard/">enroll Couse</Link>
+            <Link to="/user-dashboard/user-course">enroll Course</Link>
           </li>
           
         </ul>

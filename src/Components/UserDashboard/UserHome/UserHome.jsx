@@ -5,7 +5,7 @@ function UserHome() {
     const handleLogout = () => {
       if (window.confirm("Are you sure you want to logout?")) {
         localStorage.removeItem("authToken");
-        navigate("/login");
+        navigate("/");
       }
     };
   return (

@@ -1,23 +1,17 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx"; // Import useAuth hook
 import "../Components/Login.css";
 
 function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Get login function from context
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -33,36 +27,24 @@ function Login() {
     try {
       const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const result = await response.json();
-      console.log("Login response:", result);
 
       if (response.ok) {
         setSuccess("Login successful!");
+        
+        // Save user details in context
+        login({ userId: result.id, email: result.email });
 
-        // Store userId in localStorage
-       
-          localStorage.setItem("userId",JSON.stringify(result.id) );
-          console.log(result.id)     
-        console.log("User Role:", result.userRole); // Debugging
-
-        if (result.userRole === "admin") {
-          navigate("/admin-dashboard");
-        } else if (result.userRole === "super_admin") {
-          navigate("/super-admin-dashboard");
-        } else {
-          navigate("/user-dashboard/user-data");
-        }
+        // Redirect based on user role
+        navigate(result.userRole === "admin" ? "/admin-dashboard" : "/user-dashboard");
       } else {
         setError(result.message || "Login failed. Please try again.");
       }
     } catch (error) {
-      console.error("Error:", error);
       setError("An error occurred. Please try again later.");
     }
   };
@@ -75,23 +57,11 @@ function Login() {
         {success && <div className="success-message">{success}</div>}
 
         <div className="field">
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} required />
           <label>Email Address</label>
         </div>
         <div className="field">
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          <input type="password" name="password" value={formData.password} onChange={handleChange} required />
           <label>Password</label>
         </div>
         <div className="field">

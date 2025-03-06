@@ -10,6 +10,7 @@ import Admin from './Components/AdminDashbord/Admin/Admin';
 import AdminData from './Components/AdminDashbord/AdminData/AdminData';
 import AddCourse from './Components/AdminDashbord/AddCourse/AddCourse';
 import UserCourse from './Components/AdminDashbord/UsersCourses/UsersCourses';
+import Course from './Components/UserDashboard/Course/Course';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/user-dashboard" element={< UserDashboard   />}>
          <Route path="user-data" element={<UserData />} /> 
          <Route path="user-records" element={<UserHome />} /> 
+         <Route path="user-course" element={<Course />} /> 
          </Route>
          <Route path="/admin-dashboard" element={<AdminDashboard />} > 
          <Route path="Admin" element={<Admin/>} /> 
