@@ -2,30 +2,29 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext.jsx"; 
 import "bootstrap/dist/css/bootstrap.min.css";
+import emailjs from "@emailjs/browser";
 
 const Course = () => {
   const { user } = useAuth();
   const [courses, setCourses] = useState([]);
   const [enrolledCourses, setEnrolledCourses] = useState({});
 
-  // Load courses from API
   useEffect(() => {
     axios.get("http://localhost:5000/api/courses")
-      .then((response) => {
-        console.log("Fetched courses:", response.data);
-        setCourses(response.data);
-      })
+      .then((response) => setCourses(response.data))
       .catch((error) => console.error("Error fetching courses:", error));
   }, []);
 
-  // Load enrolled courses
   useEffect(() => {
     if (user?.userId) {
       axios.get(`http://localhost:5000/api/enrolled-courses/${user.userId}`)
         .then((response) => {
           const enrolled = {};
           response.data.forEach((course) => {
-            enrolled[course.courseId] = course.status; // Store enrollment status
+            enrolled[course.courseId] = { 
+              status: course.status, 
+              orderId: course.orderId 
+            };
           });
           setEnrolledCourses(enrolled);
         })
@@ -33,7 +32,7 @@ const Course = () => {
     }
   }, [user?.userId]);
 
-  const handleEnrollClick = async (courseId) => {
+  const handleEnrollClick = async (courseId, courseName, lecturer) => {
     if (enrolledCourses[courseId]) {
       alert("You are already enrolled in this course!");
       return;
@@ -46,8 +45,17 @@ const Course = () => {
       });
 
       if (response.status === 201) {
-        setEnrolledCourses({ ...enrolledCourses, [courseId]: "Pending" });
-        alert("Enrollment successful! ");
+        const { orderId } = response.data;
+
+        setEnrolledCourses({ 
+          ...enrolledCourses, 
+          [courseId]: { status: "Pending", orderId } 
+        });
+
+        alert(`Enrollment successful! Order ID: ${orderId}`);
+        
+        // Send email notification
+        sendEmail(user.email, courseName, lecturer, orderId);
       } else {
         alert("Enrollment failed.");
       }
@@ -56,6 +64,32 @@ const Course = () => {
       alert("Failed to enroll. Please try again.");
     }
   };
+
+  const sendEmail = (userEmail, courseName, lecturer, orderId) => {
+    const emailParams = {
+      user_email: userEmail,
+      course_name: courseName,
+      lecturer_name: lecturer,
+      order_id: orderId,
+    };
+  
+    emailjs.send(
+      "service_ekyud9w", // Your EmailJS Service ID
+      "template_tfvhsob", // Your EmailJS Template ID
+      emailParams, 
+      "XCeRk44XQgEGM0Cft" // Your EmailJS Public Key
+    )
+    .then((response) => {
+      console.log("Email sent successfully:", response);
+      alert("Enrollment confirmation email sent!");
+    })
+    .catch((error) => {
+      console.error("Error sending email:", error);
+      alert("Failed to send email. Please try again.");
+    });
+  };
+  
+
 
   return (
     <div className="container mt-4">
@@ -71,14 +105,32 @@ const Course = () => {
             <p><strong>Start Date:</strong> {course.startDate}</p>
             <p><strong>End Date:</strong> {course.endDate}</p>
             <p><strong>Status:</strong> {course.status}</p>
-            <p>{course.courseDescription}</p>
 
-            {enrolledCourses[course.id] === "Pending" ? (
+            {enrolledCourses[course.id]?.orderId && (
+              <p>
+                <strong>Order ID:</strong>  {enrolledCourses[course.id].orderId} 
+                <br /><br />
+                <button 
+                  type="button" 
+                  className="btn btn-dark" 
+                  onClick={() => sendEmail(user.email, course.courseName, course.lecturer, enrolledCourses[course.id].orderId)}
+                >
+                  Send Email
+                </button>
+              </p>
+            )}
+
+            {enrolledCourses[course.id]?.status === "Pending" ? (
               <button className="btn btn-warning" disabled>Pending</button>
-            ) : enrolledCourses[course.id] === "Enrolled" ? (
+            ) : enrolledCourses[course.id]?.status === "Enrolled" ? (
               <button className="btn btn-success" disabled>Enrolled</button>
             ) : (
-              <button className="btn btn-danger" onClick={() => handleEnrollClick(course.id)}>Enroll</button>
+              <button 
+                className="btn btn-danger" 
+                onClick={() => handleEnrollClick(course.id, course.courseName, course.lecturer)}
+              >
+                Enroll
+              </button>
             )}
             <br /><br />
           </div>
